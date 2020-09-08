@@ -1,19 +1,20 @@
+#Libraries
 library(caret)
 library(ROCR)
 library(corrplot)
 set.seed(5890)
+
+# Load dataset
 path="M:/Sachin My files/R/CSV files/Bank credit card logistic/BankCreditCard.CSV"
 cc=read.csv(path, header=T)
+
+#Drop unwanted column
 cc$Customer.ID=NULL
-View(cc)
+
+#Dataypes
 str(cc)
 
-cc1=data.frame(cc)
-View(cc1)
-dim(cc1)
-
 #converting factor variables
-
 cc$Gender=as.factor(cc$Gender)
 cc$Academic_Qualification=as.factor(cc$Academic_Qualification)
 cc$Marital=as.factor(cc$Marital)
@@ -24,14 +25,12 @@ cc$Repayment_Status_April=as.factor(cc$Repayment_Status_April)
 cc$Repayment_Status_May=as.factor(cc$Repayment_Status_May)
 cc$Repayment_Status_June=as.factor(cc$Repayment_Status_June)
 cc$Default_Payment=as.factor(cc$Default_Payment)
-str(cc)
 
 # Ratio of the Y variable to check whether data is balanced or not
 table(cc$Default_Payment)
 prop.table(table(cc$Default_Payment))
 
 # check for nulls
-
 checknull=function(x)
   return(any(is.na(x)))
 
@@ -43,7 +42,6 @@ if(length(col_name) > 0) {
   print("No NULLs")
 
 # check for blanks
-
 checkblank=function(x)
   return(any(x==""))
 
@@ -54,8 +52,7 @@ if(length(col_name) > 0){
 }else 
   print("No Blanks")
 
-# check for 0
-
+# check for zero's
 checkzero=function(x)
   return(any(x==0))
 
@@ -75,7 +72,6 @@ numdata=cc[,numcol]
 dim(numdata)
 
 #Factorial data
-
 faccol=colnames(cc)[sapply(cc,is.factor)]
 facdata=cc[,faccol]
 dim(facdata)
@@ -88,7 +84,6 @@ for(e in faccol){
 }
 
 # Fixing Marital feature which has one extra level 
-
 table(cc$Marital)
 cc$Marital=as.character(cc$Marital)
 cc$Marital[cc$Marital==0]=2 
@@ -96,10 +91,11 @@ cc$Marital=as.factor(cc$Marital)
 
 
 # Check for negative values
-
 checknegative=function(x)
   return(any(x<0))
 colnames(numdata)[apply(numdata,2,checknegative)]
+
+#Assigning negative values to zero
 
 cc$Jan_Bill_Amount[cc$Jan_Bill_Amount<0]=0
 cc$Feb_Bill_Amount[cc$Feb_Bill_Amount<0]=0
